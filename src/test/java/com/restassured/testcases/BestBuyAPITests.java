@@ -2,6 +2,7 @@ package com.restassured.testcases;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -52,14 +53,11 @@ public class BestBuyAPITests extends BaseTest{
 
 		/*
 		 * Writing the request and response to extent report
-		 * These set of statements needs to repeated in all your tests to log the req and response in extent report.
-		 * This can be still be created as and method and called once.
+		 * This statement needs to repeated in all your tests to log the req and response in extent report.
+		 * 
 		 * 
 		 */
-		LogStatus.info("---- Request ---");
-		formatAPIAndLogInReport(writer.toString());
-		LogStatus.info("---- Response ---");
-		formatAPIAndLogInReport(response.prettyPrint());
+		writeRequestAndResponseInReport(writer.toString(), response.prettyPrint());
 
 		//Asserting status code
 		response.then().statusCode(200);
@@ -109,10 +107,7 @@ public class BestBuyAPITests extends BaseTest{
 				.body(mapobj) //passing mapobj in request body
 				.post(Constants.BASEURL_BESTBUY+Constants.BESTBUY_POSTPRODUCT_ENDPOINT); //posting request
 
-		LogStatus.info("---- Request ---");
-		formatAPIAndLogInReport(writer.toString());
-		LogStatus.info("---- Response ---");
-		formatAPIAndLogInReport(response.prettyPrint());
+		writeRequestAndResponseInReport(writer.toString(), response.prettyPrint());
 
 		//Assert status code
 		response.then().statusCode(201);
@@ -152,10 +147,7 @@ public class BestBuyAPITests extends BaseTest{
 				.post(Constants.BASEURL_BESTBUY+Constants.BESTBUY_POSTPRODUCT_ENDPOINT); //posting request
 
 
-		LogStatus.info("---- Request ---");
-		formatAPIAndLogInReport(writer.toString());
-		LogStatus.info("---- Response ---");
-		formatAPIAndLogInReport(response.prettyPrint());
+		writeRequestAndResponseInReport(writer.toString(), response.prettyPrint());
 
 
 		//Assert status code
@@ -167,6 +159,31 @@ public class BestBuyAPITests extends BaseTest{
 		//Assertion using pojo getter method
 		Assert.assertEquals(resobj.getName(), data.get("name"));
 
+	}
+	
+	@Test
+	public void postProductByReadingRequestFromFile(Hashtable<String,String> data) throws IOException {
+		
+		//reading the request body from a json file directly and passing to body as a string
+		Response response=	given()
+				.filter(new RequestLoggingFilter(captor)) //This line is mandatory to log the request details to extent report
+				.header("Content-Type","application/json")
+				.contentType(ContentType.JSON)
+				.log()
+				.all()
+				.body(generateStringFromResource(Constants.REQUEST_JSON_FOLDER_PATH+"request_post_product.json"))
+				.post(Constants.BASEURL_BESTBUY+Constants.BESTBUY_POSTPRODUCT_ENDPOINT);
+		
+		writeRequestAndResponseInReport(writer.toString(), response.prettyPrint());
+		
+		//Assert status code
+				response.then().statusCode(201);
+
+				PostProductResponse resobj= response.as(PostProductResponse.class); 
+
+				System.out.println(resobj.toString());
+				//Assertion using pojo getter method
+				Assert.assertEquals(resobj.getName(), data.get("name"));
 	}
 
 

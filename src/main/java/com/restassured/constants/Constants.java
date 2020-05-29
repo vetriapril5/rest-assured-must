@@ -30,6 +30,10 @@ public class Constants {
 	public static final String BESTBUY_GETPRODUCTS_ENDPOINT = "/products?$limit={limit}";
 	public static final String BESTBUY_POSTPRODUCT_ENDPOINT ="/products";
 	public static final String AUTH_ENDPOINT = "";
+	
+	//Request xml paths
+	public static final String REQUEST_JSON_FOLDER_PATH =  System.getProperty("user.dir")+
+			"/src/test/resources/jsonsforrequestbody/";
 
 
 }

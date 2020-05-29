@@ -44,14 +44,9 @@ public class RestCountriesTest extends BaseTest{
 
 		/*
 		 * Writing the request and response to extent report
-		 * These set of statements needs to repeated in all your tests to log the req and response in extent report.
-		 * This can be still be created as and method and called once.
-		 * 
+		 *  
 		 */
-		LogStatus.info("---- Request ---");
-		formatAPIAndLogInReport(writer.toString());
-		LogStatus.info("---- Response ---");
-		formatAPIAndLogInReport(response.prettyPrint());
+		writeRequestAndResponseInReport(writer.toString(), response.prettyPrint());
 		
 		//Asserting the country code in the response using jsonPath. 
 		//Expected value is from TESTDATA sheet and column expectedCountryCapital
